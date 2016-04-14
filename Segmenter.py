@@ -1,5 +1,5 @@
 import numpy as np
-from lib.Helpers import insert_symbol, remove_symbol, bern, get_words_freq, get_all_words_freq, put_boundaries_randomly, get_current_word, get_word
+from lib.Helpers import insert_symbol, remove_symbol, bern, get_words_freq, get_all_words_freq, get_current_word, put_boundaries_randomly, get_word
 from lib.FreqVocab import FreqVocab
 
 
@@ -118,14 +118,14 @@ class Segmenter:
         else:
             I = 0
         
-        # If second word is final word, I_final is one
+        # If second word is final word, I_final is zero
         if get_current_word(temp_sent, m-1) == w3:
             I_final = 0
         else:
             I_final = 1
         
-        enum = (n_w2 + self.alpha*p_w2) * (n - n_u + (self.p/2)) * (n_w3 + 1 + self.alpha*p_w3) * (n_u +I_final + (self.p/2)) 
-        denom = (n + self.alpha) * (n+self.p) *  (n + 1 + self.alpha) *(n+1+self.p)
+        enum = (n_w2 + self.alpha*p_w2) * (n_w - n_u + (self.p/2)) * (n_w3 + 1 + self.alpha*p_w3) * (n_u +I_final + (self.p/2)) 
+        denom = (n_w + self.alpha) * (n_w+self.p) *  (n_w + 1 + self.alpha) *(n_w+1+self.p)
         
         return float(enum)/float(denom)
 
