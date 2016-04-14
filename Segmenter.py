@@ -30,6 +30,7 @@ class Segmenter:
     def __gibbs(self, text):
         # for every sentence
         for i in range(self.m):
+            print(i)
             sent = text[i]
             j = 0  # position in a sentence
             while True:
@@ -49,6 +50,7 @@ class Segmenter:
 
                 j+=1
             text[i]=sent
+        return text
 
     # this function flips a coin based on probabiliy of putting a boundary
     # and then takes action (removes or places a new boundary symbol or does not do anything)
@@ -111,7 +113,7 @@ class Segmenter:
         for i in range(m):
             char = w[i].lower()
             count = self.char_freq[char] if char in self.char_freq else 0
-            res *= count/ self.char_freq[self.TOTAL_SYMBOL]
-        return self.p * (1 - self.p)**(m - 1)
+            res *= count / self.char_freq[self.TOTAL_SYMBOL]
+        return self.p * (1 - self.p)**(m - 1) * res
 
 
