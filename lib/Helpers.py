@@ -80,7 +80,7 @@ def change_freq(all_freq,freq,remove=False,total_symb='_TOTAL_'):
 # inputs :
 #   p: probability to put a boundary
 #   text : 1 dim. array of strings
-def put_boundaries_randomly(text,p,symb='.'):
+def put_boundaries_randomly(text, p, symb='.'):
     m = np.shape(text)[0]
     for j in range(m):
         sent = text[j]
@@ -88,9 +88,7 @@ def put_boundaries_randomly(text,p,symb='.'):
         while True:
             n = len(sent)
             if i == n - 1: break
-            if bern(p):
-                 # we don't want to have two boundaries in a row
-                if not (i!=0 and sent[i-1]==symb):
+            if bern(p) and sent[i]!=symb: # don't want to have two boundaries in the row
                     sent = insert_symbol(sent,i,symb)
             # adjust positions based on the decision that has been made
             if len(sent)>n: # we added a boundary

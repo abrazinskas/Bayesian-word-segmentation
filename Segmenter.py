@@ -4,7 +4,7 @@ from lib.Helpers import insert_symbol, remove_symbol, bern, get_words_freq, get_
 
 class Segmenter:
     BOUNDARY = '.'  # the boundary symbol
-    RANDOM_BOUND_PROB = 0.2 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
+    RANDOM_BOUND_PROB = 1 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
     TOTAL_SYMBOL = '_TOTAL_'
 
     # inputs:
@@ -25,19 +25,19 @@ class Segmenter:
 
         for i in range(iter):
             text = self.__gibbs(text)
+        print(text)
 
 
     def __gibbs(self, text):
         # for every sentence
         for i in range(self.m):
-            print(i)
             sent = text[i]
             j = 0  # position in a sentence
             while True:
                 n = len(sent)
                 # since we will change the length of the sentence the stopping condition is dynamic
                 if j == n - 1: break
-                p = self.__boundary_prob(sent,j)
+                p = 0 #self.__boundary_prob(sent,j)
                 self.__update_word_freq(sent, remove=True)
                 sent = self.__action(sent, j, p)
                 self.__update_word_freq(sent, remove=False)
@@ -47,7 +47,6 @@ class Segmenter:
                     j+=1
                 if len(sent)<n: # we removed a boundary
                     j-=1
-
                 j+=1
             text[i]=sent
         return text
@@ -61,7 +60,7 @@ class Segmenter:
     #   p: probability for a new boundary
     def __action(self, sent, i, p):
         if bern(p):
-            if not sent[i] == self.BOUNDARY:  # leave it the way it is if the current position has a boundary symbol
+            if not (sent[i+1] == self.BOUNDARY or sent[i] == self.BOUNDARY):  # leave it the way it is if the current position has a boundary symbol
                 sent = insert_symbol(sent, i, self.BOUNDARY)
         else:
             if sent[i] == self.BOUNDARY:
