@@ -2,7 +2,7 @@ import numpy as np
 
 # join parameter controls if the output should be an array of joint strings
 # returns data, words, and letters frequencies
-def load_text(filename,join=True,total_key = '_TOTAL_'):
+def load_text(filename,join=True, total_key = '_TOTAL_'):
     data=[]
     char_freq = {
         total_key:0
@@ -117,3 +117,25 @@ def bern(p):
     return np.random.binomial(1, p)
 
 
+
+# returns the current words between the two boundaries in the [sent]
+# based on the current position [i]
+def get_current_word(sent, i,bound_symb='.'):
+    m = len(sent)
+    start = i
+    end = i
+    # search for the left end
+    while True:
+        if start == 0 or start > (m-1) : break
+        if sent[start] == bound_symb:
+            start+=1 # we add one because we don't want to return the boundary symbol in the beginning, ie. :'.dog'
+            break
+        start-=1
+    # search for the right end
+    while True:
+        if end >= (m - 1): break
+        if sent[end] == bound_symb:
+            end-=1 # same story as in the previous loop
+            break
+        end+=1
+    return sent[start:end+1]
