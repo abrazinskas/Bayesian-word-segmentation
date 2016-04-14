@@ -137,3 +137,15 @@ def get_current_word(sent, i,bound_symb='.'):
             break
         end+=1
     return sent[start:end+1]
+    
+    # Find words until boundary in sentence
+    def get_word(sent, i, before):
+        #Find left word from boundary
+        if before:
+            parts_word = sent[:(i+1)].rpartition('.')
+            word = parts_word[-1]
+        #Find right word from boundary
+        else:
+            parts_word = sent[(i+1):].partition('.')
+            word = parts_word[0]
+        return word
