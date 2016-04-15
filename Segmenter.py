@@ -5,7 +5,7 @@ from lib.FreqVocab import FreqVocab
 
 class Segmenter:
     __BOUNDARY = '.'  # the boundary symbol
-    __RANDOM_BOUND_PROB = 0.1 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
+    __RANDOM_BOUND_PROB = 0.05 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
     __TOTAL_SYMBOL = '_TOTAL_'
 
 
@@ -32,7 +32,7 @@ class Segmenter:
     def run(self, iter):
         for i in range(iter):
             self.text = self.__gibbs(self.text)
-        print(self.text)
+        return self.text
 
 
     def __gibbs(self, text):
@@ -44,7 +44,7 @@ class Segmenter:
                 n = len(sent)
                 # since we will change the length of the sentence the stopping condition is dynamic
                 if j == n - 1: break
-                p = 1#self.__boundary_prob(sent,j)
+                p = self.__boundary_prob(sent,j)
                 self.word_freq.update_freq(sent, remove=True)
                 sent = self.__action(sent, j, p)
                 self.word_freq.update_freq(sent, remove=False)
