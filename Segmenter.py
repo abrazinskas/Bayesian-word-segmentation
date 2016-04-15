@@ -12,11 +12,11 @@ class Segmenter:
     # inputs:
     #   p : beta parameter, i.e. number of heads and tails
     #   alpha : DP hyper-parameter proportional to the probability of visitors to sit on an unoccupied table
-    def __init__(self, text, char_freq, p, alpha, p_dollar=0.2):
+    def __init__(self, text, char_freq, p, alpha, p_hash=0.2):
         self.char_freq = char_freq
         self.p = p
         self.alpha = alpha
-        self.p_dollar = p_dollar # this hyperparameter is used in P_0
+        self.p_hash = p_hash # this hyperparameter is used in P_0
 
         self.m = np.shape(text)[0] # number of sentences
         self.text = put_boundaries_randomly(text,self.__RANDOM_BOUND_PROB)
@@ -112,6 +112,6 @@ class Segmenter:
             char = w[i].lower()
             count = self.char_freq[char] if char in self.char_freq else 0
             res *= float(count) / total
-        return res*self.p_dollar * (1 - self.p_dollar)**(m - 1)
+        return res*self.p_hash * (1 - self.p_hash)**(m - 1)
 
 
