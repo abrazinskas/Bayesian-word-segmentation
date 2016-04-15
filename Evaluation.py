@@ -1,4 +1,5 @@
 import numpy as np
+import re
 
 class Evaluation:
     __BOUNDARY = '.'
@@ -16,6 +17,9 @@ class Evaluation:
             sent = text[i]
             segm_sent = segm_text[i]
             bound_sent = __index_boundary(self, text)
+            (P, R, F) = __boundary_eval(self, bound_sent, bound_segm)
+            (BP, BR, BF) = __ambigious_eval(self, bound_sent, bound_segm)
+            (LP, LR, LF) = __lexicon_eval(self, sent, text)
             #TODO: calculate precision recall, F0 over all text
             
     
@@ -26,7 +30,7 @@ class Evaluation:
     #   bound_segm = index of boundaries from segmented sentence
     def __boundary_eval(self, bound_sent, bound_segm):
         correct_bound = 0
-        for i in range(len(bound_sent)):
+        for i in range(len(bound_sent) - 1):
             if bound_sent[i] == bound_segm[i] and bound_sent[i+1] == bound_segm[i+1]:
                 correct_bound += 1
         
@@ -40,16 +44,35 @@ class Evaluation:
         return (P, R, F0)
     
     
-    # Precision, recall & F0 on the lexicon: number of words
-    def __lexicon_eval(self, bound_sent, bound_segm):
-        
-        return 0.5
+    # Precision, recall & F0 on the lexicon: type of words
+    def __lexicon_eval(self, sent, segm):
+        sent = sent.split(' ')
+        segm = segm.split(' ')
+        correct_lexi = 0
+        for i in range(len(sent)):
+            if sent[i] in segm:
+                correct_lexi += 1
+                
+        p_total = len(segm) - 2
+        r_total = len(sent) - 2
+        P = correct_lexi/p_total
+        R = correct_lexi/r_total
+        F0 = __F0(self, P, R)
+        return (P, R, F0)
         
     # Ambigious boundaries precision, recall & F0
     # All predicted boundaries which are correct, not considering the word
     def __ambigious_eval(self, bound_sent, bound_segm):
-        
-        return 0.5
+         c = np.intersect1d(bound_sent, bound_segm)
+         correct_ambi = len(c)
+         
+         #Do not include first and last boundary
+         p_total = len(bound_segm) - 2
+         r_total = len(bound_sent) - 2
+         P = correct_ambi/p_total
+         R = correct_ambi/r_total
+         F0 = __F0(self, P, R)
+         return (P, R, F0)
         
     #Compute F0 measure from precision and recall    
     def __F0(self, P, R):
