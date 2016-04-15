@@ -5,8 +5,10 @@ from lib.Helpers import load_text, put_boundaries_randomly, remove_symbol,get_cu
 from Segmenter import Segmenter
 
 # loading data
-#file_path = 'data/br-phono-train.txt'
-file_path = 'data/small.txt'
+file_path = 'data/br-phono-train.txt'
+#file_path = 'data/small.txt'
 (text,word_freq,char_freq) = load_text(file_path)
-segmenter = Segmenter(text,char_freq=char_freq, p=0, alpha=2000)
-segmenter.run(10)
+segmenter = Segmenter(text=text,char_freq=char_freq, p=2, alpha=2000)
+text = segmenter.run(200)
+
+print(text)
