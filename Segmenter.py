@@ -1,5 +1,5 @@
 import numpy as np
-from lib.Helpers import insert_symbol, remove_symbol, bern, get_words_freq, get_all_words_freq, put_boundaries_randomly, get_current_word
+from lib.Helpers import insert_symbol, remove_symbol, bern, get_words_freq, get_all_words_freq, get_current_word, put_boundaries_randomly, get_word
 from lib.FreqVocab import FreqVocab
 
 
@@ -98,10 +98,36 @@ class Segmenter:
         denom =(n_w + self.alpha)*(n_w + self.p)
         return float(enum)/float(denom)
 
+    #Hypothesis of putting a boundary
     def __h2(self,sent,i):
-        return 0.2
+        temp_sent = self.__action(sent, i, 0)
+        
+        w2 = get_word(temp_sent, i, before=True)
+        w3 = get_word(temp_sent, i, before=False)       
+        n_w2 = self.word_freq.get_freq(w2)
+        n_w3 = self.word_freq.get_freq(w3)
+        p_w2 = self.P0(w2)
+        p_w3 = self.P0(w3)
+        m = len(sent)
+        n_u = self.m
+        n_w = self.word_freq.get_total_freq()
 
-
+        # If words are the same, I is one   
+        if w2 == w3:
+            I = 1
+        else:
+            I = 0
+        
+        # If second word is final word, I_final is zero
+        if get_current_word(temp_sent, m-1) == w3:
+            I_final = 0
+        else:
+            I_final = 1
+        
+        enum = (n_w2 + self.alpha*p_w2) * (n_w - n_u + (self.p/2)) * (n_w3 + 1 + self.alpha*p_w3) * (n_u +I_final + (self.p/2)) 
+        denom = (n_w + self.alpha) * (n_w+self.p) *  (n_w + 1 + self.alpha) *(n_w+1+self.p)
+        
+        return float(enum)/float(denom)
 
     # 1. base distribution
     def P0(self, w):
