@@ -130,7 +130,7 @@ class Segmenter:
         else:
             I_final = 1
         
-        enum = (n_w2 + self.alpha*p_w2) * (n_w - n_u + (self.p/2)) * (n_w3 + 1 + self.alpha*p_w3) * (n_u +I_final + (self.p/2)) 
+        enum = (n_w2 + self.alpha*p_w2) * (n_w - n_u + (self.p/2)) * (n_w3 + I + self.alpha*p_w3) * (n_u +I_final + (self.p/2)) 
         denom = (n_w + self.alpha) * (n_w+self.p) *  (n_w + 1 + self.alpha) *(n_w+1+self.p)
         
         return enum/denom
