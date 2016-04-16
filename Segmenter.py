@@ -12,7 +12,7 @@ class Segmenter:
     # inputs:
     #   p : beta parameter, i.e. number of heads and tails
     #   alpha : DP hyper-parameter proportional to the probability of visitors to sit on an unoccupied table
-    def __init__(self, text, char_freq, p, alpha, p_hash=0.2):
+    def __init__(self, text, char_freq, p, alpha, p_hash):
         self.char_freq = char_freq
         self.p = p
         self.alpha = alpha
@@ -32,6 +32,7 @@ class Segmenter:
     def run(self, iter):
         for i in range(iter):
             self.text = self.__gibbs(self.text)
+            print "Iteration: %d" % i
         return self.text
 
 

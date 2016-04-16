@@ -36,6 +36,12 @@ def load_text(filename,join=True, total_key = '_TOTAL_'):
             data.append(s)
     return data, word_freq, char_freq
 
+#Read file with boundaries
+def load_file(filename):
+    with open(filename) as d:
+        data = [line.rstrip('\n') for line in d]
+    
+    return data
 
 # returns word freq. from 1 dimensional array of text
 def get_all_words_freq(text,sep=' ',total_key='_TOTAL_'):
