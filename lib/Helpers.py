@@ -155,3 +155,9 @@ def get_word(sent, i, before):
         parts_word = sent[(i+1):].partition('.')
         word = parts_word[0]
     return word
+
+
+def save_to_file(text,file):
+    with open(file,'w+') as f:
+        for sent in text:
+            f.write(sent+"\n")

@@ -32,7 +32,7 @@ class Segmenter:
     def run(self, iter):
         for i in range(iter):
             self.text = self.__gibbs(self.text)
-            print "Iteration: %d" % i
+            print ("Iteration: %d" % i)
         return self.text
 
 
