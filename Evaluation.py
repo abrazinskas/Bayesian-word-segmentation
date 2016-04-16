@@ -13,7 +13,7 @@ class Evaluation:
         self.m = np.shape(text)[0]
         
     def run(self):
-        total_P = total_R = total_F = total_BP = total_BR = total_BF = total_LP = total_LR = total_LF = 0
+        total_P = total_R = total_F = total_BP = total_BR = total_BF = total_LP = total_LR = total_LF = 0     
         for i in range(self.m):
             sent = self.text[i]
             segm_sent = self.segm_text[i]
@@ -30,7 +30,7 @@ class Evaluation:
             total_LP += LP
             total_LR += LR
             total_LF += LF
-        
+            
         P = 100* (total_P/float(self.m))
         R = 100 * (total_R/float(self.m))
         F = 100 * (total_F/float(self.m))
@@ -70,24 +70,32 @@ class Evaluation:
             F0 = self.__F0( P, R)        
         
         return (P, R, F0)
-    
-    
+        
     # Precision, recall & F0 on the lexicon: type of words
     def __lexicon_eval(self, sent, segm):
         sent = sent.split(' ')
-        segm = segm.split('\.')
+        segm_split = segm.split('\.')
         correct_lexi = 0
         for i in range(len(sent)):
-            if sent[i] in segm:
+            if sent[i] in segm_split:
                 correct_lexi += 1
         
+        # Find all words, so exclude the ones with only one letter:
+        index_segm = self.__index_boundary(segm, True)
+        bounds = [0] + index_segm + [(len(index_segm) + 1)]
+        
+        count = 0
+        for i in range(len(bounds)-1):
+            if (bounds[i] - bounds[i+1] == 1):
+                count += 1
+            
         if correct_lexi == 0:
             P = 0
             R = 0
             F0 = 0
         else:        
-            p_total = len(segm) - 2
-            r_total = len(sent) - 2
+            p_total = len(segm_split) - count
+            r_total = len(sent)
             P = correct_lexi/float(p_total)
             R = correct_lexi/float(r_total)
             F0 = self.__F0(P, R)
