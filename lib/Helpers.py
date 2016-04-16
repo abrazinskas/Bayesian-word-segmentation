@@ -1,14 +1,15 @@
 import numpy as np
+import random
 
 # join parameter controls if the output should be an array of joint strings
 # returns data, words, and letters frequencies
 def load_text(filename,join=True, total_key = '_TOTAL_'):
-    data=[]
+    text=[]
     char_freq = {
-        total_key:0
+        total_key:0.0
     }
     word_freq = {
-        total_key:0
+        total_key:0.0
     }
 
     with open(filename) as f:
@@ -20,21 +21,21 @@ def load_text(filename,join=True, total_key = '_TOTAL_'):
                 word = word.lower()
                 # storing word frequencies
                 if word in word_freq:
-                    word_freq[word]+=1
+                    word_freq[word]+=1.0
                 else:
-                    word_freq[word]=1
+                    word_freq[word]=1.0
 
                 # storing character frequencies
                 for char in word:
                     if(char in char_freq):
-                        char_freq[char]+=1
+                        char_freq[char]+=1.0
                     else:
-                        char_freq[char]=1
-                    char_freq[total_key]+=1 # the total number of words
+                        char_freq[char]=1.0
+                    char_freq[total_key]+=1.0 # the total number of words
 
             if (join): s= "".join(s)
-            data.append(s)
-    return data, word_freq, char_freq
+            text.append(s)
+    return text, word_freq, char_freq
 
 #Read file with boundaries
 def load_file(filename):
@@ -61,9 +62,9 @@ def get_words_freq(sent,sep='.'):
     words = sent.split(sep)
     for word in words:
         if(word in freq):
-            freq[word]+=1
+            freq[word]+=1.0
         else:
-            freq[word]=1
+            freq[word]=1.0
     return freq
 
 
@@ -118,7 +119,9 @@ def remove_symbol(st,i):
 
 # performs a Bernoulli trial
 def bern(p):
-    return np.random.binomial(1, p)
+    r = random.uniform(0,1)
+    return r<=p
+    #return np.random.binomial(1, p)
 
 
 

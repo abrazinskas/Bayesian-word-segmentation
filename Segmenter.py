@@ -8,6 +8,8 @@ class Segmenter:
     __RANDOM_BOUND_PROB = 0.05 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
     __TOTAL_SYMBOL = '_TOTAL_'
 
+    __T = None # current temperature
+
 
     # inputs:
     #   p : beta parameter, i.e. number of heads and tails
@@ -21,7 +23,6 @@ class Segmenter:
         self.m = np.shape(text)[0] # number of sentences
         self.text = put_boundaries_randomly(text,self.__RANDOM_BOUND_PROB)
 
-
         # creating vocab
         freq = get_all_words_freq(self.text, self.__BOUNDARY)
         self.word_freq = FreqVocab(freq, self.__TOTAL_SYMBOL)
@@ -30,7 +31,9 @@ class Segmenter:
     # inputs:
     #   data: the preprocessed array of concatenated string sentences
     def run(self, iter):
+        temps = np.arange(0,1,step=1.0/float(iter)) # temperatures
         for i in range(iter):
+            self.__T = temps[i]
             self.text = self.__gibbs(self.text)
             print ("Iteration: %d" % i)
         return self.text
@@ -76,9 +79,11 @@ class Segmenter:
         return sent
 
     # computes a probability to put a boundary in the position i
+    # takes temperature into account
     def __boundary_prob(self, sent, i):
-        h1 = self.__h1(sent,i)
-        h2 = self.__h2(sent,i)
+        h1 = self.__h1(sent,i)**self.__T
+        h2 = self.__h2(sent,i)**self.__T
+        if h1+h2 == 0: return 0
         return h2/(h1+h2)
 
     # hypothesis of NOT putting a boundary
@@ -95,9 +100,9 @@ class Segmenter:
         n_w = self.word_freq.get_total_freq()
         n_u = self.m if get_current_word(temp_sent,m-1) == cur_word else n_w - self.m # here we check if the current word is the utterance final
 
-        enum = (n_c_w + self.alpha*self.P0(cur_word))*(n_u + self.p/2)
+        enum = (n_c_w + self.alpha*self.__P0(cur_word))*(n_u + self.p/2)
         denom =(n_w + self.alpha)*(n_w + self.p)
-        return float(enum)/float(denom)
+        return enum/denom
 
     #Hypothesis of putting a boundary
     def __h2(self,sent,i):
@@ -107,8 +112,8 @@ class Segmenter:
         w3 = get_word(temp_sent, i, before=False)       
         n_w2 = self.word_freq.get_freq(w2)
         n_w3 = self.word_freq.get_freq(w3)
-        p_w2 = self.P0(w2)
-        p_w3 = self.P0(w3)
+        p_w2 = self.__P0(w2)
+        p_w3 = self.__P0(w3)
         m = len(sent)
         n_u = self.m
         n_w = self.word_freq.get_total_freq()
@@ -128,17 +133,17 @@ class Segmenter:
         enum = (n_w2 + self.alpha*p_w2) * (n_w - n_u + (self.p/2)) * (n_w3 + 1 + self.alpha*p_w3) * (n_u +I_final + (self.p/2)) 
         denom = (n_w + self.alpha) * (n_w+self.p) *  (n_w + 1 + self.alpha) *(n_w+1+self.p)
         
-        return float(enum)/float(denom)
+        return enum/denom
 
     # 1. base distribution
-    def P0(self, w):
+    def __P0(self, w):
         m = len(w)
         res = 1.0
-        total = float(self.char_freq[self.__TOTAL_SYMBOL])
+        total = self.char_freq[self.__TOTAL_SYMBOL]
         for i in range(m):
-            char = w[i].lower()
+            char = w[i]
             count = self.char_freq[char] if char in self.char_freq else 0
-            res *= float(count) / total
-        return res*self.p_hash * (1 - self.p_hash)**(m - 1)
+            res *= count
+        return (res/total**m)*self.p_hash * (1 - self.p_hash)**(m - 1)
 
 

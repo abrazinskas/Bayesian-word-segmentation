@@ -20,11 +20,10 @@ class FreqVocab:
 
 
     def get_freq(self,word):
-        word = word.lower()
         if word in self.freq_vocab:
             return self.freq_vocab[word]
         else:
-            return 0
+            return 0.0
 
     def get_total_freq(self):
         return self.freq_vocab[self.total_symbol]
