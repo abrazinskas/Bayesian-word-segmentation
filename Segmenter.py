@@ -108,7 +108,7 @@ class Segmenter:
         temp_sent = self.__action(sent, i, 1) # bug 1, needed to have the last parameter 1 not 0
         
         w2 = get_word(temp_sent, i, before=True)
-        w3 = get_word(temp_sent, i, before=False) # bug 2 it seemed that the function outputed empty string for I.like instead of like.
+        w3 = get_word(temp_sent, i, before=False) # bug 2  the function outputted an empty string for I.like instead of "like".
         n_w2 = self.word_freq.get_freq(w2)
         n_w3 = self.word_freq.get_freq(w3)
         p_w2 = self.__P0(w2)
