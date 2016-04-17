@@ -5,7 +5,7 @@ from lib.FreqVocab import FreqVocab
 
 class Segmenter:
     __BOUNDARY = '.'  # the boundary symbol
-    __RANDOM_BOUND_PROB = 0.05 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
+    __RANDOM_BOUND_PROB = 0.2 # the random boundary probability constant that controls what is a probability of putting initially boundaries in the text
     __TOTAL_SYMBOL = '_TOTAL_'
 
     __T = None # current temperature
@@ -81,8 +81,8 @@ class Segmenter:
     # computes a probability to put a boundary in the position i
     # takes temperature into account
     def __boundary_prob(self, sent, i):
-        h1 = self.__h1(sent,i)**self.__T
-        h2 = self.__h2(sent,i)**self.__T
+        h1 = self.__h1(sent,i)#**self.__T
+        h2 = self.__h2(sent,i)#**self.__T
         if h1+h2 == 0: return 0
         return h2/(h1+h2)
 
