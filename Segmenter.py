@@ -139,10 +139,8 @@ class Segmenter:
         m = len(w)
         res = 1.0
         total = self.char_freq[self.__TOTAL_SYMBOL]
-        for i in range(m):
-            char = w[i].lower()
-            count = self.char_freq[char] if char in self.char_freq else 0
-            res *= count
+        for char in w:
+            res *= self.char_freq[char] if char in self.char_freq else 0
         return (res/total**m)*self.p_hash * (1 - self.p_hash)**(m - 1)
 
 

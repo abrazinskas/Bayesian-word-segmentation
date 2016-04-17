@@ -18,7 +18,6 @@ def load_text(filename,join=True, total_key = '_TOTAL_'):
             word_freq[total_key]+=len(s)
 
             for word in s:
-                word = word.lower()
                 # storing word frequencies
                 if word in word_freq:
                     word_freq[word]+=1.0
