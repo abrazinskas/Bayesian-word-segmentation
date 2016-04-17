@@ -91,7 +91,6 @@ class Segmenter:
     #   sent : current sentence
     #   i : current index
     def __h1(self, sent, i):
-        # TODO: need to think about the way the current word is produced, this one can be wrong
         temp_sent = self.__action(sent, i, 0)
         cur_word = get_current_word(temp_sent, i)
 
@@ -106,10 +105,10 @@ class Segmenter:
 
     #Hypothesis of putting a boundary
     def __h2(self,sent,i):
-        temp_sent = self.__action(sent, i, 0)
+        temp_sent = self.__action(sent, i, 1) # bug 1, needed to have the last parameter 1 not 0
         
         w2 = get_word(temp_sent, i, before=True)
-        w3 = get_word(temp_sent, i, before=False)       
+        w3 = get_word(temp_sent, i, before=False) # bug 2 it seemed that the function outputed empty string for I.like instead of like.
         n_w2 = self.word_freq.get_freq(w2)
         n_w3 = self.word_freq.get_freq(w3)
         p_w2 = self.__P0(w2)
@@ -141,7 +140,7 @@ class Segmenter:
         res = 1.0
         total = self.char_freq[self.__TOTAL_SYMBOL]
         for i in range(m):
-            char = w[i]
+            char = w[i].lower()
             count = self.char_freq[char] if char in self.char_freq else 0
             res *= count
         return (res/total**m)*self.p_hash * (1 - self.p_hash)**(m - 1)

@@ -155,7 +155,9 @@ def get_word(sent, i, before):
         word = parts_word[-1]
     #Find right word from boundary
     else:
-        parts_word = sent[(i+1):].partition('.')
+        #parts_word = sent[(i+1):].partition('.')
+        # I'm assuming that the string can be "I.like.dogs" (and you want to get "like")
+        parts_word = sent[(i+2):].split('.')
         word = parts_word[0]
     return word
 
